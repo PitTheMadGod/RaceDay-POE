@@ -1,0 +1,59 @@
+name: Validate Repository Structure
+
+# Runs on every push and pull request targeting main, so you get a
+# fresh build result (and screenshot opportunity) after every commit.
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  validate-structure:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Check /docs folder exists
+        run: |
+          if [ ! -d "docs" ]; then
+            echo "::error::/docs folder is missing"
+            exit 1
+          fi
+          echo "/docs folder found."
+
+      - name: Check ERD file exists (PNG or PDF)
+        run: |
+          if ! ls docs/*ERD*.png docs/*ERD*.pdf >/dev/null 2>&1; then
+            echo "::error::No ERD file (PNG or PDF) found in /docs"
+            exit 1
+          fi
+          echo "ERD file found."
+
+      - name: Check endpoint plan exists (PDF or Markdown)
+        run: |
+          if ! ls docs/*Endpoint*.pdf docs/*Endpoint*.md >/dev/null 2>&1; then
+            echo "::error::No endpoint plan file (PDF or Markdown) found in /docs"
+            exit 1
+          fi
+          echo "Endpoint plan file found."
+
+      - name: Check SQL script exists
+        run: |
+          if ! ls docs/*.sql >/dev/null 2>&1; then
+            echo "::error::No .sql script found in /docs"
+            exit 1
+          fi
+          echo "SQL script found."
+
+      - name: Check README exists
+        run: |
+          if [ ! -f "README.md" ]; then
+            echo "::error::README.md is missing from the repository root"
+            exit 1
+          fi
+          echo "README.md found."
+
+      - name: All checks passed
+        run: echo "Repository structure is valid."
