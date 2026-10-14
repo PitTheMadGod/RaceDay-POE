@@ -54,7 +54,10 @@ public class RaceDayDbContext : DbContext
             .Property(c => c.CategoryDistance)
             .HasColumnType("decimal(6,2)");
 
-        // EventEnrolments
+        // EventEnrolments (key is named EnrolmentId, which EF does not detect by convention)
+        modelBuilder.Entity<EventEnrolment>()
+            .HasKey(en => en.EnrolmentId);
+
         modelBuilder.Entity<EventEnrolment>()
             .HasOne(en => en.Event)
             .WithMany(e => e.Enrolments)
