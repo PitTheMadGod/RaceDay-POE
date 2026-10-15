@@ -28,4 +28,4 @@ GitHub Actions (`.github/workflows/dotnet-ci.yml`) builds the solution and runs 
 ![CI build](docs/ci-green-build.png)
 
 ## Demo video
-YouTube (unlisted): <PASTE LINK HERE>
+YouTube (unlisted): < https://youtu.be/Sjqotq00gtU?si=H6dgPAqUWkCc-26T >
