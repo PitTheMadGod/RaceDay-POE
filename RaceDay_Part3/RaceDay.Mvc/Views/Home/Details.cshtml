@@ -1,0 +1,58 @@
+@model EventDto
+@{
+    ViewData["Title"] = Model.Name;
+    var categories = ViewBag.Categories as List<CategoryDto> ?? new();
+    var role = Context.Session.GetRole();
+}
+<div class="row">
+    <div class="col-md-8">
+        @if (!string.IsNullOrEmpty(Model.BannerImageUrl))
+        {
+            <img src="@Model.BannerImageUrl" class="img-fluid rounded mb-3 event-banner" alt="@Model.Name banner" />
+        }
+        <span class="badge bg-event-type mb-2">@Model.EventType</span>
+        <h1>@Model.Name</h1>
+        <p class="text-muted">📍 @Model.Location &middot; 📅 @Model.EventDate.ToString("dddd, dd MMMM yyyy") &middot; 🏁 @Model.Distance km</p>
+        <p>@Model.Description</p>
+
+        <h2 class="h5 mt-4">Categories</h2>
+        @if (!categories.Any())
+        {
+            <p class="text-muted">No categories have been added for this event yet.</p>
+        }
+        else
+        {
+            <ul class="list-group mb-3">
+                @foreach (var c in categories)
+                {
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span>@c.CategoryName</span>
+                        <span class="text-muted small">
+                            @(c.MinAge is not null || c.MaxAge is not null ? $"Age {c.MinAge}-{c.MaxAge}" : "")
+                            @(c.CategoryDistance is not null ? $" {c.CategoryDistance} km" : "")
+                        </span>
+                    </li>
+                }
+            </ul>
+        }
+    </div>
+    <div class="col-md-4">
+        <div class="card shadow-sm">
+            <div class="card-body text-center">
+                @if (role == "Participant")
+                {
+                    <a class="btn btn-raceday w-100" asp-controller="Enrolments" asp-action="Enrol" asp-route-eventId="@Model.EventId">Enrol now</a>
+                }
+                else if (role == null)
+                {
+                    <p class="text-muted mb-2">Log in as a Participant to enrol.</p>
+                    <a class="btn btn-raceday w-100" asp-controller="Account" asp-action="Login">Log in</a>
+                }
+                else
+                {
+                    <p class="text-muted mb-0">Organiser accounts can't enrol in events.</p>
+                }
+            </div>
+        </div>
+    </div>
+</div>

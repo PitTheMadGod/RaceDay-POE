@@ -1,0 +1,53 @@
+@model List<EnrolmentRowViewModel>
+@{
+    var ev = ViewBag.Event as EventDto;
+    ViewData["Title"] = "Enrolments";
+}
+<h1 class="mb-1">Enrolments for "@ev?.Name"</h1>
+<p class="text-muted mb-4">@Model.Count participant(s) enrolled.</p>
+
+@if (!Model.Any())
+{
+    <p class="text-muted">No one has enrolled yet.</p>
+}
+else
+{
+    <table class="table table-hover align-middle">
+        <thead>
+            <tr>
+                <th>Participant</th>
+                <th>Category</th>
+                <th>Enrolled on</th>
+                <th>Status</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var row in Model)
+            {
+                <tr>
+                    <td>@row.ParticipantName</td>
+                    <td>@row.CategoryName</td>
+                    <td>@row.EnrolmentDate.ToString("dd MMM yyyy")</td>
+                    <td>
+                        @if (row.HasResult)
+                        {
+                            <span class="badge bg-success">Result captured</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-warning text-dark">Pending result</span>
+                        }
+                    </td>
+                    <td class="text-end">
+                        @if (!row.HasResult)
+                        {
+                            <a class="btn btn-sm btn-raceday" asp-controller="Results" asp-action="Create"
+                               asp-route-enrolmentId="@row.EnrolmentId" asp-route-eventId="@ev?.EventId">Capture result</a>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

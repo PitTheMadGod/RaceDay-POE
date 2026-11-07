@@ -1,0 +1,41 @@
+@model ProfileViewModel
+@{
+    ViewData["Title"] = "My profile";
+}
+<h1 class="mb-4">My profile</h1>
+
+@if (!string.IsNullOrEmpty(Model.SuccessMessage))
+{
+    <div class="alert alert-success">@Model.SuccessMessage</div>
+}
+@if (!string.IsNullOrEmpty(Model.ErrorMessage))
+{
+    <div class="alert alert-danger">@Model.ErrorMessage</div>
+}
+
+<form asp-action="Index" method="post" enctype="multipart/form-data" class="col-md-6">
+    @Html.AntiForgeryToken()
+
+    @if (!string.IsNullOrEmpty(Model.ExistingProfilePictureUrl))
+    {
+        <img src="@Model.ExistingProfilePictureUrl" class="rounded-circle mb-3 profile-picture" alt="Profile picture" />
+    }
+
+    <p class="text-muted">Role: <strong>@Model.Role</strong></p>
+
+    <div class="mb-3">
+        <label asp-for="FullName" class="form-label"></label>
+        <input asp-for="FullName" class="form-control" />
+        <span asp-validation-for="FullName" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Email" class="form-label"></label>
+        <input asp-for="Email" class="form-control" />
+        <span asp-validation-for="Email" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="ProfilePicture" class="form-label">Profile picture</label>
+        <input asp-for="ProfilePicture" type="file" accept="image/*" class="form-control" />
+    </div>
+    <button type="submit" class="btn btn-raceday">Save changes</button>
+</form>

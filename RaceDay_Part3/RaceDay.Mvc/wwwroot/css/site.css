@@ -1,0 +1,92 @@
+/* RaceDay brand - sporting, energetic theme. One place for the look, so every page matches. */
+
+:root {
+    --raceday-orange: #ff5a1f;
+    --raceday-orange-dark: #e04a12;
+    --raceday-navy: #10203c;
+    --raceday-navy-light: #1a3156;
+    --raceday-gray: #f5f6f8;
+}
+
+body {
+    font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background-color: var(--raceday-gray);
+    color: #1f2430;
+}
+
+.raceday-navbar {
+    background: linear-gradient(90deg, var(--raceday-navy) 0%, var(--raceday-navy-light) 100%);
+}
+
+.btn-raceday {
+    background-color: var(--raceday-orange);
+    border-color: var(--raceday-orange);
+    color: #fff;
+    font-weight: 600;
+}
+
+.btn-raceday:hover,
+.btn-raceday:focus {
+    background-color: var(--raceday-orange-dark);
+    border-color: var(--raceday-orange-dark);
+    color: #fff;
+}
+
+.bg-event-type {
+    background-color: var(--raceday-navy);
+    color: #fff;
+    font-weight: 500;
+}
+
+.card {
+    border: none;
+    border-radius: 0.75rem;
+}
+
+.event-card img.card-img-top,
+.event-banner {
+    height: 180px;
+    object-fit: cover;
+    border-top-left-radius: 0.75rem;
+    border-top-right-radius: 0.75rem;
+}
+
+.event-banner {
+    border-radius: 0.75rem;
+    width: 100%;
+}
+
+.event-card-placeholder {
+    height: 180px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--raceday-navy), var(--raceday-orange));
+    color: #fff;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    border-top-left-radius: 0.75rem;
+    border-top-right-radius: 0.75rem;
+}
+
+.profile-picture {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border: 3px solid var(--raceday-orange);
+}
+
+h1, h2, h3 {
+    font-weight: 700;
+    color: var(--raceday-navy);
+}
+
+a {
+    color: var(--raceday-orange-dark);
+}
+
+.table thead {
+    background-color: var(--raceday-navy);
+    color: #fff;
+}

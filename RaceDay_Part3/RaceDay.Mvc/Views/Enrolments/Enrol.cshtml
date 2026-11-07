@@ -1,0 +1,29 @@
+@{
+    var ev = ViewBag.Event as EventDto;
+    var categories = ViewBag.Categories as List<CategoryDto> ?? new();
+    ViewData["Title"] = "Enrol";
+}
+<h1 class="mb-1">Enrol in "@ev?.Name"</h1>
+<p class="text-muted mb-4">Choose a category to confirm your enrolment.</p>
+
+@if (!categories.Any())
+{
+    <p class="text-muted">No categories are available for this event yet - please check back later.</p>
+}
+else
+{
+    <form asp-action="Enrol" asp-route-eventId="@ev?.EventId" method="post" class="col-md-6">
+        @Html.AntiForgeryToken()
+        <div class="mb-3">
+            <label class="form-label">Category</label>
+            <select name="categoryId" class="form-select" required>
+                @foreach (var c in categories)
+                {
+                    <option value="@c.CategoryId">@c.CategoryName @(c.CategoryDistance is not null ? $"({c.CategoryDistance} km)" : "")</option>
+                }
+            </select>
+        </div>
+        <button type="submit" class="btn btn-raceday">Confirm enrolment</button>
+        <a class="btn btn-outline-secondary" asp-controller="Home" asp-action="Details" asp-route-id="@ev?.EventId">Cancel</a>
+    </form>
+}

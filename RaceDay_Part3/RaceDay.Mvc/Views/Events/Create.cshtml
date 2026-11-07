@@ -1,0 +1,16 @@
+@model EventFormViewModel
+@{
+    ViewData["Title"] = "New event";
+}
+<h1 class="mb-4">Create event</h1>
+
+@if (!string.IsNullOrEmpty(Model.ErrorMessage))
+{
+    <div class="alert alert-danger">@Model.ErrorMessage</div>
+}
+
+<form asp-action="Create" method="post" enctype="multipart/form-data" class="col-md-8">
+    @Html.AntiForgeryToken()
+    @await Html.PartialAsync("_EventForm", Model)
+    <button type="submit" class="btn btn-raceday">Create event</button>
+</form>

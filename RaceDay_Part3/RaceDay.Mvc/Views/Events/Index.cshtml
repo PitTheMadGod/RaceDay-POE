@@ -1,0 +1,47 @@
+@model List<EventDto>
+@{
+    ViewData["Title"] = "Manage events";
+}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="mb-0">Manage events</h1>
+    <a class="btn btn-raceday" asp-controller="Events" asp-action="Create">+ New event</a>
+</div>
+
+@if (!Model.Any())
+{
+    <p class="text-muted">You haven't created any events yet.</p>
+}
+else
+{
+    <table class="table table-hover align-middle">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Date</th>
+                <th>Location</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var ev in Model)
+            {
+                <tr>
+                    <td>@ev.Name</td>
+                    <td><span class="badge bg-event-type">@ev.EventType</span></td>
+                    <td>@ev.EventDate.ToString("dd MMM yyyy")</td>
+                    <td>@ev.Location</td>
+                    <td class="text-end">
+                        <a class="btn btn-sm btn-outline-secondary" asp-controller="Categories" asp-action="Create" asp-route-eventId="@ev.EventId">+ Category</a>
+                        <a class="btn btn-sm btn-outline-secondary" asp-controller="Events" asp-action="Edit" asp-route-id="@ev.EventId">Edit</a>
+                        <form asp-controller="Events" asp-action="Delete" asp-route-id="@ev.EventId" method="post" class="d-inline"
+                              onsubmit="return confirm('Delete this event? This cannot be undone.');">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

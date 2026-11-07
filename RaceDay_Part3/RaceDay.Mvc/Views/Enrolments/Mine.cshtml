@@ -1,0 +1,43 @@
+@model List<MyEnrolmentRowViewModel>
+@{
+    ViewData["Title"] = "My enrolments";
+}
+<h1 class="mb-4">My enrolments</h1>
+
+@if (!Model.Any())
+{
+    <p class="text-muted">You haven't enrolled in any events yet. <a asp-controller="Home" asp-action="Index">Browse events</a>.</p>
+}
+else
+{
+    <table class="table table-hover align-middle">
+        <thead>
+            <tr>
+                <th>Event</th>
+                <th>Date</th>
+                <th>Category</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var row in Model)
+            {
+                <tr>
+                    <td><a asp-controller="Home" asp-action="Details" asp-route-id="@row.EventId">@row.EventName</a></td>
+                    <td>@row.EventDate.ToString("dd MMM yyyy")</td>
+                    <td>@row.CategoryName</td>
+                    <td>
+                        @if (row.Status == "Completed")
+                        {
+                            <span class="badge bg-secondary">Completed</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-success">Confirmed</span>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

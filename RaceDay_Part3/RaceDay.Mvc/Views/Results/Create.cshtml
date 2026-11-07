@@ -1,0 +1,27 @@
+@model ResultFormViewModel
+@{
+    ViewData["Title"] = "Capture result";
+}
+<h1 class="mb-1">Capture result</h1>
+<p class="text-muted mb-4">@Model.ParticipantName &middot; @Model.EventName &middot; @Model.CategoryName</p>
+
+@if (!string.IsNullOrEmpty(Model.ErrorMessage))
+{
+    <div class="alert alert-danger">@Model.ErrorMessage</div>
+}
+
+<form asp-action="Create" asp-route-eventId="@Context.Request.Query["eventId"]" method="post" class="col-md-6">
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="EnrolmentId" />
+    <div class="mb-3">
+        <label asp-for="FinishTime" class="form-label"></label>
+        <input asp-for="FinishTime" class="form-control" placeholder="hh:mm:ss e.g. 00:52:14" />
+        <span asp-validation-for="FinishTime" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="FinishPosition" class="form-label">Finish position</label>
+        <input asp-for="FinishPosition" type="number" class="form-control" placeholder="e.g. 47" />
+        <span asp-validation-for="FinishPosition" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-raceday">Save result</button>
+</form>

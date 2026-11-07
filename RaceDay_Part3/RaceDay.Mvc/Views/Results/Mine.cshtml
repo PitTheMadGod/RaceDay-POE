@@ -1,0 +1,36 @@
+@model List<MyResultRowViewModel>
+@{
+    ViewData["Title"] = "My results";
+}
+<h1 class="mb-4">My results</h1>
+
+@if (!Model.Any())
+{
+    <p class="text-muted">No results have been captured for you yet. They'll show up here once an Organiser records them after an event.</p>
+}
+else
+{
+    <table class="table table-hover align-middle">
+        <thead>
+            <tr>
+                <th>Event</th>
+                <th>Date</th>
+                <th>Category</th>
+                <th>Finish time</th>
+                <th>Position</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var row in Model)
+            {
+                <tr>
+                    <td>@row.EventName</td>
+                    <td>@row.EventDate.ToString("dd MMM yyyy")</td>
+                    <td>@row.CategoryName</td>
+                    <td>@row.FinishTime</td>
+                    <td>@row.FinishPosition</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
