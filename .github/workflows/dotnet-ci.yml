@@ -1,0 +1,29 @@
+name: Build and Test RaceDay (API + MVC)
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up .NET 8 SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restore dependencies
+        run: dotnet restore RaceDay_Part3/RaceDay.sln
+
+      - name: Build (API, MVC and tests)
+        run: dotnet build RaceDay_Part3/RaceDay.sln --no-restore --configuration Release
+
+      - name: Run unit tests
+        run: dotnet test RaceDay_Part3/RaceDay.sln --no-build --configuration Release --verbosity normal
