@@ -1,0 +1,49 @@
+name: Generate EF Core Migration
+
+# Run this by hand: Actions tab -> "Generate EF Core Migration" -> Run workflow.
+# It creates the InitialCreate migration from the C# models (Code-First) and
+# commits the Migrations folder into RaceDay_Part3/RaceDay.Api.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up .NET 8 SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Install EF Core tools
+        run: |
+          dotnet tool install --global dotnet-ef --version 8.0.8
+          echo "$HOME/.dotnet/tools" >> $GITHUB_PATH
+
+      - name: Restore dependencies
+        run: dotnet restore RaceDay_Part3/RaceDay.sln
+
+      - name: Add InitialCreate migration
+        run: >
+          dotnet ef migrations add InitialCreate
+          --project RaceDay_Part3/RaceDay.Api
+          --startup-project RaceDay_Part3/RaceDay.Api
+          --output-dir Migrations
+
+      - name: Build to check the migration compiles
+        run: dotnet build RaceDay_Part3/RaceDay.sln --no-restore --configuration Release
+
+      - name: Commit the Migrations folder
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add RaceDay_Part3/RaceDay.Api/Migrations
+          git commit -m "Add EF Core InitialCreate migration"
+          git push
