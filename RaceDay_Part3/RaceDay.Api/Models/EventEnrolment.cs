@@ -1,7 +1,10 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace RaceDay.Api.Models;
 
 public class EventEnrolment
 {
+    [Key]
     public int EnrolmentId { get; set; }
     public int EventId { get; set; }
     public int CategoryId { get; set; }

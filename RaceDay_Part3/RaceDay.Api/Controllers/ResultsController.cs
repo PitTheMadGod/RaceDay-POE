@@ -89,6 +89,49 @@ public class ResultsController : ControllerBase
         return Ok(results);
     }
 
+    /// <summary>Corrects a captured result (finish time and position).</summary>
+    [HttpPut("api/results/{resultId}")]
+    [Authorize(Roles = "Organiser")]
+    public async Task<ActionResult<ResultResponseDto>> Update(int resultId, [FromBody] ResultCreateDto dto)
+    {
+        if (!ModelState.IsValid) return BadRequest(ModelState);
+
+        var result = await _db.Results
+            .Include(r => r.Enrolment)
+            .ThenInclude(e => e!.Event)
+            .FirstOrDefaultAsync(r => r.ResultId == resultId);
+        if (result?.Enrolment?.Event is null)
+            return NotFound(new { message = "Result not found." });
+        if (result.Enrolment.Event.OrganiserId != CurrentUserId) return Forbid();
+
+        if (!TimeSpan.TryParseExact(dto.FinishTime, @"hh\:mm\:ss", CultureInfo.InvariantCulture, out var finishTime))
+            return BadRequest(new { message = "FinishTime must be in the format hh:mm:ss." });
+
+        result.FinishTime = finishTime;
+        result.FinishPosition = dto.FinishPosition;
+        await _db.SaveChangesAsync();
+
+        return Ok(ToDto(result));
+    }
+
+    /// <summary>Removes a captured result.</summary>
+    [HttpDelete("api/results/{resultId}")]
+    [Authorize(Roles = "Organiser")]
+    public async Task<IActionResult> Delete(int resultId)
+    {
+        var result = await _db.Results
+            .Include(r => r.Enrolment)
+            .ThenInclude(e => e!.Event)
+            .FirstOrDefaultAsync(r => r.ResultId == resultId);
+        if (result?.Enrolment?.Event is null)
+            return NotFound(new { message = "Result not found." });
+        if (result.Enrolment.Event.OrganiserId != CurrentUserId) return Forbid();
+
+        _db.Results.Remove(result);
+        await _db.SaveChangesAsync();
+        return NoContent();
+    }
+
     private static ResultResponseDto ToDto(Result r) => new()
     {
         ResultId = r.ResultId,

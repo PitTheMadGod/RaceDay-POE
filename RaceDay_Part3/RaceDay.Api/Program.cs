@@ -56,7 +56,18 @@ builder.Services.AddSwaggerGen(options =>
     {
         Title = "RaceDay API",
         Version = "v1",
-        Description = "RESTful API for the RaceDay event management system (PROG6212 POE Part 2)."
+        Description = "RESTful API for the RaceDay event management system. " +
+                      "Log in via POST /api/auth/login first - the session cookie is then sent automatically. " +
+                      "Organisers manage events, categories and results; Participants enrol and view their own enrolments and results."
+    });
+
+    // Documents the cookie-based session login so Swagger shows how the API is secured.
+    options.AddSecurityDefinition("RaceDayAuth", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+    {
+        Type = Microsoft.OpenApi.Models.SecuritySchemeType.ApiKey,
+        In = Microsoft.OpenApi.Models.ParameterLocation.Cookie,
+        Name = "RaceDayAuth",
+        Description = "Session cookie issued by POST /api/auth/login."
     });
 });
 

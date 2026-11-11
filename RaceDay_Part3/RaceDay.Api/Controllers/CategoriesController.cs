@@ -63,6 +63,50 @@ public class CategoriesController : ControllerBase
         return CreatedAtAction(nameof(GetAll), new { eventId }, ToDto(category));
     }
 
+    /// <summary>Updates a category of an event owned by the logged-in Organiser.</summary>
+    [HttpPut("{categoryId}")]
+    [Authorize(Roles = "Organiser")]
+    public async Task<ActionResult<CategoryResponseDto>> Update(int eventId, int categoryId, [FromBody] CategoryCreateDto dto)
+    {
+        if (!ModelState.IsValid) return BadRequest(ModelState);
+
+        var category = await _db.Categories
+            .Include(c => c.Event)
+            .FirstOrDefaultAsync(c => c.CategoryId == categoryId && c.EventId == eventId);
+        if (category is null || category.Event is null)
+            return NotFound(new { message = "Category not found." });
+        if (category.Event.OrganiserId != CurrentUserId) return Forbid();
+
+        category.CategoryName = dto.CategoryName;
+        category.MinAge = dto.MinAge;
+        category.MaxAge = dto.MaxAge;
+        category.CategoryDistance = dto.CategoryDistance;
+
+        await _db.SaveChangesAsync();
+        return Ok(ToDto(category));
+    }
+
+    /// <summary>Deletes a category of an event owned by the logged-in Organiser (only if nobody enrolled in it).</summary>
+    [HttpDelete("{categoryId}")]
+    [Authorize(Roles = "Organiser")]
+    public async Task<IActionResult> Delete(int eventId, int categoryId)
+    {
+        var category = await _db.Categories
+            .Include(c => c.Event)
+            .FirstOrDefaultAsync(c => c.CategoryId == categoryId && c.EventId == eventId);
+        if (category is null || category.Event is null)
+            return NotFound(new { message = "Category not found." });
+        if (category.Event.OrganiserId != CurrentUserId) return Forbid();
+
+        var hasEnrolments = await _db.EventEnrolments.AnyAsync(e => e.CategoryId == categoryId);
+        if (hasEnrolments)
+            return Conflict(new { message = "This category already has enrolments and cannot be deleted." });
+
+        _db.Categories.Remove(category);
+        await _db.SaveChangesAsync();
+        return NoContent();
+    }
+
     private static CategoryResponseDto ToDto(Category c) => new()
     {
         CategoryId = c.CategoryId,
