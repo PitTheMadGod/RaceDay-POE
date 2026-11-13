@@ -50,7 +50,7 @@ Run the tests in Visual Studio with **Test > Run All Tests**, or on the command 
 
 The GitHub Actions workflow (`.github/workflows/dotnet-ci.yml`) restores, builds and tests the API, the MVC app and the tests on every push.
 
-![CI passing](docs/part3-ci-success.png)
+![CI passing](../docs/part3-ci-success.png)
 
 ## Video walkthrough
 
